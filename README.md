@@ -116,3 +116,36 @@ curl -X POST http://localhost:8080/api/v1/sensors/TEMP-001/readings \
   -H "Content-Type: application/json" \
   -d '{"value": 23.5}'
 ```
+
+***REPORT***
+
+**Q1) Default lifecycle of a JAX-RS resource class**  
+Resource instances may be created and managed by the runtime in a thread-safe way. Shared data should be stored carefully and synchronized to remain thread safe.
+
+**Q2) Benefits of hypermedia**  
+Hyperlinks allow the server to provide distinct endpoints to the user without hardcoding every endpoint. This reduces the burden of scaling a system.
+
+**Q3) The difference between returning only the ID versus the entire object list**  
+Returning only the ID reduces the size of the payload and the bandwidth load, but it forces the client to send multiple fetch (`GET`) requests. Returning the entire list of objects increases the payload, but improves usability when the client receives the data.
+
+**Q4) DELETE operation being idempotent**  
+The DELETE operation is idempotent in REST. In the first iteration, an object is deleted. In the second iteration of the DELETE request, since the object being deleted is already gone, the API should return `404 Not Found`.
+
+**Q5) Usage of the `@Consumes` annotation**  
+`@Consumes` allows you to define an input parameter that will be expected with the query. If the stated input parameter is not provided, even if the hyperlink is accurate, the query will not go through and will return `415 Unsupported Media Type`.
+
+**Q6) Difference between `@QueryParam` and using a direct URL path query**  
+`@QueryParam` is the standard for filtering in REST. It is flexible and works well with multiple varying search conditions, while a URL path query is better suited for segmenting the collection to be searched.
+
+**Q7) Architectural benefits of the sub-resource locator**  
+The sub-resource architectural pattern provides a readable and testable structure for hyperlinks by creating a tree structure with similar information or methods that can be used in a branching pattern.
+
+**Q8) HTTP 422 being considered more semantically accurate than 404 for a missing reference in valid JSON**  
+`404 Not Found` implies that the URI was not provided, compared to `422 Unprocessable Entity`, which implies that the request is syntactically correct but semantically invalid and cannot be executed. In the case of a missing valid JSON reference, `422` is considered more accurate since the syntax is correct, but it cannot be executed because it does not exist.
+
+**Q9) Risks of exposing Java stack traces to external API consumers**  
+Exposing the Java stack trace to external API consumers runs the risk of allowing users to identify weaknesses in the API by revealing information about the system, such as file names, frameworks, line numbers, and versions.
+
+**Q10) Advantages of using JAX-RS filters instead of manually inserting `Logger.info()`**  
+Filters centralize the logging process by avoiding repetitive code in every endpoint and support maintaining consistent logging behavior across the API.
+
